@@ -13,6 +13,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
+    var dotNotes = [SCNNode]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,9 +55,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func addDot(at hitResult : ARHitTestResult) {
         
         let dotGeometry = SCNSphere(radius: 0.005)
-        
         let material = SCNMaterial()
-        
         material.diffuse.contents = UIColor.red
         
         dotGeometry.materials = [material]
@@ -65,6 +65,27 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         dotNode.position = SCNVector3(hitResult.worldTransform.columns.3.x, hitResult.worldTransform.columns.3.y, hitResult.worldTransform.columns.3.z)
         
         sceneView.scene.rootNode.addChildNode(dotNode)
+        
+        dotNotes.append(dotNode)
+        
+        if dotNotes.count >= 2 {
+            calculate()
+        }
     }
     
+    func calculate() {
+        let start = dotNotes[0]
+        let end = dotNotes[1]
+        
+        print(start.position)
+        print(end.position)
+        
+        let a = end.position.x - start.position.x
+        let b = end.position.y - start.position.y
+        let c = end.position.z - start.position.z
+        
+        let distance = sqrt(pow(a, 2) + pow(b, 2) + pow(c, 2))
+        
+        print(abs(distance))
+    }
 }
